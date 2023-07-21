@@ -6,7 +6,7 @@ function Header() {
   return (
     <>
       <div className="header-container">
-        <nav className="mcdonald-navbar">
+        <nav className="content-navbar">
           <div className="logo-navbar">
             <a href="/" className="navbar-logo-link">
               <img src={Logo} alt=""></img>

@@ -1,64 +1,41 @@
-
 import * as React from "react";
-import List from "@mui/material/List";
+import { useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
-import CommentIcon from "@mui/icons-material/Comment";
+import ClearIcon from "@mui/icons-material/Clear";
+import { Paper } from "@mui/material";
+import EditTaskDialog from "../dialog-alert-edit-tasks/Edit-task-dialog";
 
-export default function TaskList() {
-  const [checked, setChecked] = React.useState([0]);
+export default function TaskList( {task, deleteTask, editTask} ) {
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
-
+  const handlerCloseDialog = () => {
+    setOpenDialog(!openDialog);
+  }
   return (
-    <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {[0, 1, 2, 3].map((value) => {
-        const labelId = `checkbox-list-label-${value}`;
-
-        return (
-          <ListItem
-            key={value}
-            secondaryAction={
-              <IconButton edge="end" aria-label="comments">
-                <CommentIcon />
-              </IconButton>
-            }
-            disablePadding
-          >
-            <ListItemButton
-              role={undefined}
-              onClick={handleToggle(value)}
-              dense
-            >
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ "aria-labelledby": labelId }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-            </ListItemButton>
-          </ListItem>
-        );
-      })}
-    </List>
+    <>
+    <EditTaskDialog editTask={editTask} open={openDialog} handlerCloseDialog={handlerCloseDialog} task={task} />
+    <Paper style={{ padding: "1rem 0rem"}}>
+      <ListItem
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete" onClick={() => deleteTask(task.id)}>
+            <ClearIcon />
+          </IconButton>
+        }
+        disablePadding
+      >
+        <ListItemButton role={undefined} dense>
+          <ListItemIcon>
+            <Checkbox edge="start" tabIndex={-1} disableRipple />
+          </ListItemIcon>
+          <ListItemText primary={task.text} onClick={() => setOpenDialog(true)}/>
+        </ListItemButton>
+      </ListItem>
+    </Paper>
+    </>
   );
 }
